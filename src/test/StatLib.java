@@ -29,15 +29,14 @@ class StatLib {
 	public static float cov(float[] x, float[] y)
 	{
 		float start = 0;
-		float E_x = avg(x);
-		float E_y = avg(y);
-		
+
 		for (int i = 0; i < x.length; i++)
 		{
-			start += (x[i] - E_x) * (y[i] - E_y);
+			start += x[i] * y[i];
 		}
+		start /= x.length;
 		
-		return (start / x.length);
+		return (start - avg(x) * avg(y));
 	}
 	
 	// returns the Pearson correlation coefficient of X and Y
