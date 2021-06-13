@@ -62,7 +62,6 @@ class SimpleAnomalyDetector implements TimeSeriesAnomalyDetector {
 			
 			if (max_pearson >= correlation_threshold)
 			{
-//				System.out.println("Max threshold " + max_threshold);
 				CorrelatedFeatures feature = new CorrelatedFeatures(ts.GetFeatureNames().get(i), ts.GetFeatureNames().get(max_pearson_index), max_pearson, max_line_reg, max_threshold * threshold_multiplier);
 				features_vector.add(feature);
 			}
@@ -73,15 +72,14 @@ class SimpleAnomalyDetector implements TimeSeriesAnomalyDetector {
 	public List<AnomalyReport> detect(TimeSeries ts)
 	{
 		Vector<AnomalyReport> reports_vector = new Vector<AnomalyReport>();
-		for (int i = 0; i < ts.GetFeatures().elementAt(0).size(); i++)
+		for (int cor_index = 0; cor_index < features_vector.size(); cor_index++)
 		{
-			for (int j = 0; j < features_vector.size(); j++)
+			for (int feature_size = 0; feature_size < ts.GetFeatures().elementAt(0).size(); feature_size++)
 			{
-				float dev = StatLib.dev(new Point(ts.GetFeatureAt(features_vector.elementAt(j).feature1, i), ts.GetFeatureAt(features_vector.elementAt(j).feature2, i)), features_vector.elementAt(j).lin_reg);
-				if (dev > features_vector.elementAt(j).threshold)
+				float dev = StatLib.dev(new Point(ts.GetFeatureAt(features_vector.elementAt(cor_index).feature1, feature_size), ts.GetFeatureAt(features_vector.elementAt(cor_index).feature2, feature_size)), features_vector.elementAt(cor_index).lin_reg);
+				if (dev > features_vector.elementAt(cor_index).threshold)
 				{
-//					System.out.println(i + " " + j + " " + features_vector.elementAt(j).feature1 + "-" + features_vector.elementAt(j).feature2 + " " + dev + " " + features_vector.elementAt(j).threshold);
-					AnomalyReport report = new AnomalyReport(features_vector.elementAt(j).feature1 + "-" + features_vector.elementAt(j).feature2, i + 1);
+					AnomalyReport report = new AnomalyReport(features_vector.elementAt(cor_index).feature1 + "-" + features_vector.elementAt(cor_index).feature2, feature_size + 1);
 					reports_vector.add(report);
 				}
 			}
@@ -93,5 +91,15 @@ class SimpleAnomalyDetector implements TimeSeriesAnomalyDetector {
 	public List<CorrelatedFeatures> getNormalModel()
 	{
 		return features_vector;
+	}
+	
+	public float GetCorrelationThreshold()
+	{
+		return correlation_threshold;
+	}
+	
+	public void SetCorrelationThreshold(float threshold)
+	{
+		correlation_threshold = threshold;
 	}
 }

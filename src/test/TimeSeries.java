@@ -19,19 +19,12 @@ public class TimeSeries {
 		String row = csvReader.readLine();
 
 		String[] names = row.split(",");
-		for (int i = 0; i < names.length; i++)
-		{
-			feature_names.add(names[i]);
-			feature_values.add(new Vector<Float>());
-		}
+		AddHeader(names);
 
 		while ((row = csvReader.readLine()) != null)
 		{
 		    String[] data = row.split(",");
-		    for (int i = 0; i < data.length; i++)
-		    {
-		    	feature_values.elementAt(i).add(Float.parseFloat(data[i]));
-		    }
+		    AddRow(data);
 		}
 		
 		csvReader.close();
@@ -39,6 +32,8 @@ public class TimeSeries {
 			return;
 		}
 	}
+	
+	public TimeSeries() {}
 	
 	public Vector<String> GetFeatureNames()
 	{
@@ -53,5 +48,27 @@ public class TimeSeries {
 	public Vector<Vector<Float>> GetFeatures()
 	{
 		return feature_values;
+	}
+	
+	public void AddHeader(String[] row)
+	{
+		for (int i = 0; i < row.length; i++)
+		{
+			feature_names.add(row[i]);
+			feature_values.add(new Vector<Float>());
+		}
+	}
+	
+	public void AddRow(String[] row)
+	{
+		for (int i = 0; i < row.length; i++)
+	    {
+	    	feature_values.elementAt(i).add(Float.parseFloat(row[i]));
+	    }
+	}
+	
+	public long GetTimeFileLength()
+	{
+		return feature_values.elementAt(0).size();
 	}
 }
