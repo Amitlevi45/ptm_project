@@ -25,10 +25,23 @@ public class Commands {
 		this.dio=dio;
 	}
 	
-	// you may add other helper classes here
-	
-	
-	
+	public class AnomalyRangeReport extends AnomalyReport {
+		public long endStep;
+		public AnomalyRangeReport(String description, long startStep, long endStep){
+			super(description, startStep);
+			this.endStep=endStep;
+		}
+	}
+
+	class DeviationReport {
+		public long start;
+		public long finish;
+		public DeviationReport(long start, long finish){
+			this.start=start;
+			this.finish=finish;
+		}
+	}
+
 	// the shared state of all commands
 	private class SharedState{
 		// implement here whatever you need
